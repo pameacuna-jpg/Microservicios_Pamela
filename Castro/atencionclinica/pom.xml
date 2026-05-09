@@ -7,11 +7,13 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.6</version>
         <relativePath/> </parent>
+    
     <groupId>com.vetnova</groupId>
-    <artifactId>microservice</artifactId>
+    <artifactId>atencionclinica</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name/>
-    <description/>
+    <name>atencionclinica</name>
+    <description>Microservicio de Atencion Clinica para VetNova</description>
+    
     <url/>
     <licenses>
         <license/>
