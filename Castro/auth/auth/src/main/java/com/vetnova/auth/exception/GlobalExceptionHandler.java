@@ -14,23 +14,34 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Atrapa los errores del @Valid (ej. si el correo viene vacío)
+    // 1. Errores de validación de campos (@NotBlank, @Size, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> manejoErroresValidacion(MethodArgumentNotValidException ex) {
-        log.warn("Error de validación en la petición de login");
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errores.put(error.getField(), error.getDefaultMessage());
-        });
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores); // Devuelve 400
+        ex.getBindingResult().getFieldErrors().forEach(error -> 
+            errores.put(error.getField(), error.getDefaultMessage()));
+        
+        log.warn("Errores de validación: {}", errores);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    // Atrapa los errores de credenciales inválidas que lanzamos en el AuthService
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> manejoErrorGeneral(RuntimeException ex) {
-        log.error("Error en el proceso de autenticación: {}", ex.getMessage());
+    // 2. Usuario no encontrado (404)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return crearRespuestaError(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // 3. Credenciales inválidas (401)
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return crearRespuestaError(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    // Método auxiliar para no repetir código
+    private ResponseEntity<Map<String, String>> crearRespuestaError(String mensaje, HttpStatus status) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error); // Devuelve 401
+        error.put("error", mensaje);
+        log.error("Procesando error {}: {}", status, mensaje);
+        return ResponseEntity.status(status).body(error);
     }
 }

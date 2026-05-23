@@ -3,11 +3,14 @@ package com.vetnova.auth.service;
 import com.vetnova.auth.client.UsuarioClient;
 import com.vetnova.auth.dto.LoginRequest;
 import com.vetnova.auth.security.JwtUtil;
+// Importante: Asegúrate de tener estas excepciones creadas en tu paquete exception
+import com.vetnova.auth.exception.ResourceNotFoundException; 
+import com.vetnova.auth.exception.InvalidCredentialsException; 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Slf4j // Anotación obligatoria de la rúbrica para Logs Estructurados
+@Slf4j // Logs estructurados: fundamental para auditoría en microservicios
 @Service
 public class AuthService {
 
@@ -15,30 +18,31 @@ public class AuthService {
     private UsuarioClient usuarioClient;
 
     @Autowired
-    private JwtUtil jwtUtil; // Inyectamos nuestra fábrica de tokens reales
+    private JwtUtil jwtUtil;
 
     public String procesarLogin(LoginRequest request) {
-        log.info("Iniciando proceso de login para el usuario: {}", request.getEmail());
+        log.info("Iniciando proceso de autenticación para el usuario: {}", request.getEmail());
 
-        // 1. SILENCIAMOS TEMPORALMENTE A FEIGN PARA PODER PROBAR EL TOKEN
-        /* 
+        // 1. Integración real con el Microservicio de Usuarios vía Feign
+        // Esto verifica en la base de datos de usuarios si la cuenta existe
         boolean existe = usuarioClient.validarUsuarioExiste(request.getEmail());
         
         if (!existe) {
-            log.warn("Intento de login fallido: El usuario {} no existe en la base de datos.", request.getEmail());
-            throw new RuntimeException("Credenciales inválidas o usuario no encontrado");
+            log.error("Fallo de autenticación: El usuario {} no existe.", request.getEmail());
+            throw new ResourceNotFoundException("Usuario no encontrado en el sistema");
         }
-        */
 
-        // 2. Validar contraseña (Simulación temporal, luego se usará BCryptPasswordEncoder)
+        // 2. Validación de credenciales
+        // NOTA: En producción, aquí deberías usar BCryptPasswordEncoder para comparar el hash
         if (!request.getPassword().equals("password123")) { 
-            log.warn("Contraseña incorrecta para el usuario: {}", request.getEmail());
-            throw new RuntimeException("Credenciales inválidas");
+            log.warn("Fallo de autenticación: Contraseña incorrecta para {}", request.getEmail());
+            throw new InvalidCredentialsException("Credenciales inválidas, intente nuevamente");
         }
 
-        // 3. Generar JWT (Token Stateless real con firma criptográfica)
+        // 3. Generación de Token JWT
         String tokenJwt = jwtUtil.generateToken(request.getEmail());
-        log.info("Login exitoso. JWT generado para el usuario: {}", request.getEmail());
+        
+        log.info("Autenticación exitosa. Token generado para el usuario: {}", request.getEmail());
 
         return tokenJwt;
     }
