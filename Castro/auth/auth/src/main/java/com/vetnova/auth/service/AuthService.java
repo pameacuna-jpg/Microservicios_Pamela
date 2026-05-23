@@ -24,13 +24,13 @@ public class AuthService {
 
         // 1. SILENCIAMOS TEMPORALMENTE A FEIGN PARA PODER PROBAR EL LOGIN
         // Esto evita el error de "Connection refused" mientras construyes el MS de Usuarios
-        /*
+        
         boolean existe = usuarioClient.validarUsuarioExiste(request.getEmail());
         if (!existe) {
             log.error("Fallo de autenticación: El usuario {} no existe.", request.getEmail());
             throw new ResourceNotFoundException("Usuario no encontrado en el sistema");
         }
-        */
+        
 
         // Simulamos temporalmente que el usuario siempre existe en la base de datos
         log.info("Simulando existencia de usuario para la prueba de JWT");
