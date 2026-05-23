@@ -1,4 +1,4 @@
-package com.vetnova.security;
+package com.vetnova.auth.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
