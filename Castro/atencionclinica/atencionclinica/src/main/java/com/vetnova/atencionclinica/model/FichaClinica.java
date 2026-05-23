@@ -2,6 +2,7 @@ package com.vetnova.atencionclinica.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.Valid; // <-- IMPORTANTE: Faltaba esta importación
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class FichaClinica {
     private String observaciones;
 
     // Relación exigida por rúbrica: Una ficha tiene muchos diagnósticos
+    @Valid // <-- IMPORTANTE: Esta es la anotación que activa la validación en cascada
     @OneToMany(mappedBy = "fichaClinica", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // Evita bucles infinitos al devolver JSON
     private List<Diagnostico> diagnosticos = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.vetnova.atencionclinica.service;
 
+import com.vetnova.atencionclinica.exception.ResourceNotFoundException;
 import com.vetnova.atencionclinica.model.FichaClinica;
 import com.vetnova.atencionclinica.repository.FichaClinicaRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -43,5 +44,10 @@ public class FichaClinicaService {
 
     public List<FichaClinica> obtenerTodas() {
         return repository.findAll();
+    }
+    // Método para buscar una ficha específica por su ID
+    public FichaClinica buscarPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La ficha clínica con ID " + id + " no existe."));
     }
 }

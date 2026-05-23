@@ -31,4 +31,9 @@ public class FichaClinicaController {
         }
         return ResponseEntity.ok(fichas);
     }
+    @GetMapping("/id/{id}")
+    public ResponseEntity<FichaClinica> buscarFichaPorId(@PathVariable Long id) {
+        FichaClinica ficha = service.buscarPorId(id);
+        return ResponseEntity.ok(ficha); // Devuelve un solo objeto, no una lista
+    }
 }

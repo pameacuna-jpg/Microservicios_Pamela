@@ -20,16 +20,25 @@ public class Diagnostico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idDiagnostico;
 
+    // 1. Registrar diagnóstico
     @NotBlank(message = "La descripción del diagnóstico no puede estar vacía")
-    private String descripcion;
+    private String descripcion; 
+
+    // 2. Registrar tratamiento
+    private String tratamiento; 
+
+    // 3. Emitir receta
+    private String recetaMedica; 
+
+    // 4. Emitir certificado
+    private String detalleCertificado; 
 
     private LocalDateTime fecha = LocalDateTime.now();
 
     @NotNull(message = "El ID del veterinario responsable es obligatorio")
     private Long idVeterinario; 
 
-    // Relación exigida por rúbrica: Muchos diagnósticos pertenecen a una ficha
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ficha", nullable = false)
     @JsonBackReference 
     private FichaClinica fichaClinica;
