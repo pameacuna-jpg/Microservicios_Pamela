@@ -33,14 +33,14 @@ public class AgendaService {
         
         // Como los microservicios 8084 y 8085 de tus compañeros aún no existen,
         // dejamos esto como comentario para evitar el "Connection refused".
-        /*
+        
         if (!clienteClient.validarClienteExiste(cita.getIdCliente())) {
             throw new ResourceNotFoundException("El cliente no existe en el sistema.");
         }
         if (!mascotaClient.validarMascotaExiste(cita.getIdMascota())) {
             throw new ResourceNotFoundException("La mascota no existe en el sistema.");
         }
-        */
+        
         
         log.info("Simulando validación exitosa de Cliente y Mascota vía Feign Client");
 
