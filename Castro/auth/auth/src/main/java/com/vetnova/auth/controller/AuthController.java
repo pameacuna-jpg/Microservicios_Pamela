@@ -19,8 +19,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        // La validación se hace sola por el @Valid.
-        // Si todo está bien, el servicio nos devuelve el Token JWT.
+        // La validación se hace sola por el @Valid interceptando errores desde el DTO.
+        // Si todo está bien, el servicio procesa la lógica y nos devuelve el Token JWT.
         String token = authService.procesarLogin(request);
         
         // Armamos el JSON de respuesta exitosa
@@ -28,6 +28,18 @@ public class AuthController {
         response.put("mensaje", "Autenticación exitosa");
         response.put("token", token);
 
+        return ResponseEntity.ok(response); // Devuelve 200 OK
+    }
+
+    @PostMapping("/recuperar-password")
+    public ResponseEntity<Map<String, String>> recuperarPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String mensaje = authService.recuperarContrasena(email);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", mensaje);
+        response.put("status", "success");
+        
         return ResponseEntity.ok(response); // Devuelve 200 OK
     }
 }

@@ -24,8 +24,9 @@ public class SecurityConfig {
             
             // 3. Configuramos qué rutas son públicas y cuáles privadas
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/login").permitAll() // Login es público
-                .anyRequest().authenticated() // Todo lo demás exige estar autenticado
+                // Se usa /** para que TANTO el login como recuperar-password sean públicos
+                .requestMatchers("/api/v1/auth/**").permitAll() 
+                .anyRequest().authenticated() // Todo lo demás exige estar autenticado (con Token)
             );
 
         return http.build();
