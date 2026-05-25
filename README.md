@@ -33,6 +33,14 @@ dto
 exception
 config
 ---
+# Buenas prácticas Implementadas
+
+-Manejo global de excepciones mediante @RestControllerAdvice.
+-Validaciones utilizando Jakarta Validation.
+-Logs estructurados mediante SLF4J Logger.
+-Arquitectura desacoplada basada en microservicios.
+-Persistencia mediante JPA + Hibernate.
+---
 
 # Microservicios Implementados
 
@@ -46,6 +54,9 @@ config
 # Tecnologías Utilizadas
 
 -Backend
+SLF4J Logger
+ResponseEntity
+Jakarta Validation
 Java 21
 Spring Boot
 Spring Data JPA
@@ -96,6 +107,7 @@ ms-notificaciones
 ---
 
 # Comunicación entre Microservicios
+La comunicación entre microservicios se implementó mediante REST API utilizando RestTemplate y JSON. 
 
 RestTemplate
 
@@ -194,15 +206,21 @@ para de esta manera centralizar:
 *errores de negocio
 *respuestas estructuradas JSON
 ---
+# Logs y Trazabilidad
 
-# Estado del Proyecto
+El sistema implementa logs estructurados utilizando SLF4J Logger para registrar:
 
-Arquitectura de microservicios implementada
-✅ Persistencia Oracle operativa
-✅ APIs REST funcionales
-✅ Comunicación entre microservicios operativa
-✅ Validaciones y excepciones centralizadas
-✅ Integración automática de notificaciones
-✅ Backend completamente funcional
+-movimientos de inventario,
+-actualización de stock,
+-detección de stock bajo,
+-creación automática de notificaciones,
+-monitoreo de eventos críticos.
 
+Ejemplo:
+
+INFO Registrando movimiento de inventario
+WARN Stock bajo detectado
+INFO Notificación registrada correctamente
 ---
+
+
