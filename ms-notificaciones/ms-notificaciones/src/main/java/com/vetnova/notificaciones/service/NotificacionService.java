@@ -1,5 +1,8 @@
 package com.vetnova.notificaciones.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vetnova.notificaciones.model.Notificacion;
 import com.vetnova.notificaciones.repository.NotificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,9 @@ import java.util.List;
 
 @Service
 public class NotificacionService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(NotificacionService.class);
 
     @Autowired
     private NotificacionRepository notificacionRepository;
@@ -25,6 +31,12 @@ public class NotificacionService {
     }
 
     public Notificacion crearNotificacion(Notificacion notificacion) {
+
+       logger.info("Creando notificación tipo {} para destinatario {}",
+                notificacion.getTipo(),
+                notificacion.getDestinatario()); 
+
+        logger.info("Notificación registrada correctamente");        
 
         notificacion.setEstado("PENDIENTE");
 

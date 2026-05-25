@@ -5,7 +5,7 @@ import com.vetnova.notificaciones.service.NotificacionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -28,10 +28,10 @@ public class NotificacionController {
     }
 
     @PostMapping
-    public Notificacion crearNotificacion(@Valid @RequestBody Notificacion notificacion) {
-
-        return notificacionService.crearNotificacion(notificacion);
+    public ResponseEntity<Notificacion> crearNotificacion(@Valid @RequestBody Notificacion notificacion) {
+        return ResponseEntity.ok(notificacionService.crearNotificacion(notificacion));
     }
+
 
     @PutMapping("/{id}")
     public Notificacion actualizarNotificacion(@PathVariable Long id,

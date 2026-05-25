@@ -5,7 +5,7 @@ import com.vetnova.inventario.service.MovimientoInventarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -28,11 +28,12 @@ public class MovimientoInventarioController {
     }
 
     @PostMapping
-    public MovimientoInventario registrarMovimiento(
-            @Valid @RequestBody MovimientoInventario movimiento) {
+    public ResponseEntity<MovimientoInventario> registrarMovimiento(    
+        @Valid @RequestBody MovimientoInventario movimiento) {
 
-        return movimientoService.registrarMovimiento(movimiento);
+    return ResponseEntity.ok(movimientoService.registrarMovimiento(movimiento));
     }
+
 
     @GetMapping("/producto/{idProducto}")
     public List<MovimientoInventario> buscarPorProducto(

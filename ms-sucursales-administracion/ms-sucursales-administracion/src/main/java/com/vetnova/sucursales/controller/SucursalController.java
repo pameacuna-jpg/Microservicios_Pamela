@@ -5,7 +5,7 @@ import com.vetnova.sucursales.service.SucursalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -31,10 +31,10 @@ public class SucursalController {
     }
 
     @PostMapping
-    public Sucursal crearSucursal(@Valid @RequestBody Sucursal sucursal) {
-        return sucursalService.crearSucursal(sucursal);
+    public ResponseEntity<Sucursal> crearSucursal(@Valid @RequestBody Sucursal sucursal) {
+    return ResponseEntity.ok(sucursalService.crearSucursal(sucursal));
     }
-
+    
     @PutMapping("/{id}")
     public Sucursal actualizarSucursal(@PathVariable Long id, @Valid @RequestBody Sucursal sucursal) {
         return sucursalService.actualizarSucursal(id, sucursal);

@@ -5,7 +5,7 @@ import com.vetnova.sucursales.service.BoxAtencionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -34,10 +34,10 @@ public class BoxAtencionController {
     }
 
     @PostMapping
-    public BoxAtencion crearBox(@Valid @RequestBody BoxAtencion box) {
+    public ResponseEntity<BoxAtencion> crearBox(@Valid @RequestBody BoxAtencion box) {
+        return ResponseEntity.ok(boxAtencionService.crearBox(box));
+   }
 
-        return boxAtencionService.crearBox(box);
-    }
 
     @PutMapping("/{id}")
     public BoxAtencion actualizarBox(@PathVariable Long id,

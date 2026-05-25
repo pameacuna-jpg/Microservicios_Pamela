@@ -5,7 +5,7 @@ import com.vetnova.sucursales.service.HorarioSucursalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -34,10 +34,10 @@ public class HorarioSucursalController {
     }
 
     @PostMapping
-    public HorarioSucursal crearHorario(@Valid @RequestBody HorarioSucursal horario) {
-
-        return horarioSucursalService.crearHorario(horario);
+    public ResponseEntity<HorarioSucursal> crearHorario(@Valid @RequestBody HorarioSucursal horario) {
+        return ResponseEntity.ok(horarioSucursalService.crearHorario(horario));
     }
+
 
     @PutMapping("/{id}")
     public HorarioSucursal actualizarHorario(@PathVariable Long id,

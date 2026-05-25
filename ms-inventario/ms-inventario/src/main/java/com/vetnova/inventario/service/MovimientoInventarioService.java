@@ -1,5 +1,9 @@
 package com.vetnova.inventario.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import com.vetnova.inventario.dto.NotificacionRequest;
 import org.springframework.web.client.RestTemplate;
 import com.vetnova.inventario.model.MovimientoInventario;
@@ -9,10 +13,15 @@ import com.vetnova.inventario.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
 public class MovimientoInventarioService {
+
+    private static final Logger logger = 
+            LoggerFactory.getLogger(MovimientoInventarioService.class);
+
 
     @Autowired
     private MovimientoInventarioRepository movimientoRepository;
@@ -32,6 +41,14 @@ public class MovimientoInventarioService {
     }
 
     public MovimientoInventario registrarMovimiento(MovimientoInventario movimiento) {
+
+        logger.info("Registrando movimiento de inventario. Producto ID: {}, Tipo: {}, Cantidad: {}",
+        movimiento.getIdProducto(),
+        movimiento.getTipoMovimiento(),
+        movimiento.getCantidad());
+
+
+
 
         Producto producto = productoRepository.findById(movimiento.getIdProducto())
                 .orElseThrow(() -> new RuntimeException(
@@ -75,7 +92,17 @@ public class MovimientoInventarioService {
 
         productoRepository.save(producto);
 
+        logger.info("Stock actualizado para producto {}. Stock actual: {}",
+            producto.getNombre(),
+            producto.getStockActual());
+
+
         if (producto.getStockActual() <= producto.getStockMinimo()) {
+
+            logger.warn("Stock bajo detectado para producto {}. Stock actual: {}, Stock mínimo: {}",
+                    producto.getNombre(),
+                    producto.getStockActual(),
+                    producto.getStockMinimo());
 
             NotificacionRequest notificacion =
                     new NotificacionRequest(

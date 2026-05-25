@@ -5,7 +5,7 @@ import com.vetnova.inventario.service.ProveedorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -24,11 +24,11 @@ public class ProveedorController {
     public Proveedor buscarPorId(@PathVariable Long id) {
         return proveedorService.buscarPorId(id);
     }
-
     @PostMapping
-    public Proveedor crearProveedor(@Valid @RequestBody Proveedor proveedor) {
-        return proveedorService.crearProveedor(proveedor);
+    public ResponseEntity<Proveedor> crearProveedor(@Valid @RequestBody Proveedor proveedor) {
+        return ResponseEntity.ok(proveedorService.crearProveedor(proveedor));
     }
+
 
     @PutMapping("/{id}")
     public Proveedor actualizarProveedor(@PathVariable Long id, @Valid @RequestBody Proveedor proveedor) {

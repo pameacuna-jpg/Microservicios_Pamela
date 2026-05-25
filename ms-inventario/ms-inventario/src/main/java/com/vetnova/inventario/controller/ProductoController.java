@@ -5,7 +5,7 @@ import com.vetnova.inventario.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -25,10 +25,12 @@ public class ProductoController {
         return productoService.buscarPorId(id);
     }
 
+
     @PostMapping
-    public Producto crearProducto(@Valid @RequestBody Producto producto) {
-        return productoService.crearProducto(producto);
+    public ResponseEntity<Producto> crearProducto(@Valid @RequestBody Producto producto) {
+    return ResponseEntity.ok(productoService.crearProducto(producto));
     }
+    
 
     @PutMapping("/{id}")
     public Producto actualizarProducto(@PathVariable Long id, @Valid @RequestBody Producto producto) {
