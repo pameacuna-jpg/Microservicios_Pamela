@@ -1,226 +1,154 @@
-#  VetNova — Plataforma Veterinaria Basada en Microservicios
+# VetNova - Microservicios Pamela Acuña
 
-## Descripción General
+## Descripción
 
-VetNova es una plataforma backend desarrollada para la gestión integral de clínicas veterinarias, implementando una arquitectura basada en microservicios distribuidos utilizando Spring Boot, Oracle Database y comunicación REST entre servicios.
+Este repositorio contiene tres microservicios desarrollados para el sistema veterinario VetNova utilizando Spring Boot, MySQL, JPA, Maven y arquitectura basada en microservicios.
+
+Los microservicios implementan lógica de negocio independiente, persistencia propia, validaciones, pruebas unitarias y comunicación mediante servicios REST.
+
 ---
 
-# Arquitectura del Proyecto
+## Microservicios Implementados
 
-El sistema implementa una arquitectura de microservicios distribuidos, separando cada dominio de negocio en servicios independientes.
+| Microservicio                | Puerto | Función                                                 |
+| ---------------------------- | ------ | ------------------------------------------------------- |
+| ms-inventario                | 8087   | Gestión de productos, stock y movimientos de inventario |
+| ms-notificaciones            | 8089   | Registro y gestión de alertas y notificaciones          |
+| ms-sucursales-administracion | 8090   | Administración de sucursales, boxes y horarios          |
+
 ---
 
-# Estructura General
+## Tecnologías Utilizadas
 
-MICROSERVICIOS-VET
-│
-├── ms-inventario
-├── ms-notificaciones
-├── ms-sucursales-administracion
-│
-└── README.md
+* Java 21
+* Spring Boot
+* Spring Data JPA
+* Maven
+* MySQL
+* Lombok
+* Bean Validation
+* JUnit 5
+* Mockito
+* Postman
+* GitHub
+
 ---
 
-# Arquitectura Interna por Microservicio
+## Arquitectura
 
-Cada microservicio implementa arquitectura en capas:
+Cada microservicio implementa una arquitectura en capas:
 
-controller
-service
-repository
-model
-dto
-exception
-config
----
-# Buenas prácticas Implementadas
+Controller
+↓
+Service
+↓
+Repository
+↓
+MySQL
 
--Manejo global de excepciones mediante @RestControllerAdvice.
--Validaciones utilizando Jakarta Validation.
--Logs estructurados mediante SLF4J Logger.
--Arquitectura desacoplada basada en microservicios.
--Persistencia mediante JPA + Hibernate.
+Cada servicio posee su propia base de datos y expone endpoints REST independientes.
+
 ---
 
-# Microservicios Implementados
+## Comunicación entre Microservicios
 
-| Microservicio                | Puerto | Responsabilidad                                          |
-| ---------------------------- | ------ | -------------------------------------------------------- |
-| ms-inventario                | 8087   | Gestión de productos, proveedores y movimientos de stock |
-| ms-notificaciones            | 8089   | Gestión y envío automático de notificaciones             |
-| ms-sucursales-administracion | 8090   | Gestión de sucursales, boxes y horarios                  |
+Actualmente se encuentra implementada la comunicación:
+
+Inventario → Notificaciones
+
+Flujo:
+
+Movimiento de Inventario
+↓
+Verificación de stock
+↓
+Detección de stock bajo
+↓
+Generación automática de notificación
+
+Esta comunicación se realiza mediante llamadas REST utilizando RestTemplate.
+
 ---
 
-# Tecnologías Utilizadas
+## Persistencia
 
--Backend
-SLF4J Logger
-ResponseEntity
-Jakarta Validation
-Java 21
-Spring Boot
-Spring Data JPA
-Hibernate ORM
-Maven
+Motor de Base de Datos:
 
--Base de Datos
-Oracle Database XE
+MySQL
 
--APIs y Comunicación
-REST API
-RestTemplate
-JSON
+Cada microservicio mantiene independencia de datos y persistencia propia.
 
--Herramientas
-Postman
-Git
-GitHub
-Visual Studio Code
 ---
 
-# Funcionalidades Implementadas
+## Pruebas Unitarias
 
-ms-inventario
+Se implementaron pruebas unitarias utilizando:
 
-*CRUD de Productos
-*CRUD de Proveedores
-*Movimientos de Inventario
-*Entradas y salidas de stock
-*Validación de stock insuficiente
-*Actualización automática de stock
-*Alertas automáticas de stock bajo
+* JUnit 5
+* Mockito
 
-ms-sucursales-administracion
+Resultados:
 
-*CRUD de Sucursales
-*CRUD de Boxes de Atención
-*CRUD de Horarios
-*Gestión de disponibilidad
+| Microservicio  | Pruebas |
+| -------------- | ------- |
+| Inventario     | 7       |
+| Notificaciones | 8       |
+| Sucursales     | 7       |
 
-ms-notificaciones
+Total:
 
-*Gestión de notificaciones
-*Prioridades
-*Estados
-*Alertas automáticas
-*Comunicación REST entre microservicios
+22 pruebas unitarias exitosas
+
+Resultado:
+
+BUILD SUCCESS
+
 ---
 
-# Comunicación entre Microservicios
-La comunicación entre microservicios se implementó mediante REST API utilizando RestTemplate y JSON. 
+## Endpoints Principales
 
-RestTemplate
+### Inventario
 
-Ejemplo de comunicación:
+GET /api/v1/productos
 
-ms-inventario
-        ↓
-detecta stock bajo
-        ↓
-consume API REST
-        ↓
-ms-notificaciones
-        ↓
-genera alerta automática
+POST /api/v1/productos
+
+POST /api/v1/movimientos
+
+GET /api/v1/productos/bajo-stock
+
 ---
 
-# Patrones y Estrategias Implementadas
+### Notificaciones
 
-Arquitectura
+GET /api/v1/notificaciones
 
-*Microservicios Distribuidos
-*Arquitectura en Capas
+POST /api/v1/notificaciones
 
-Patrones de Diseño
+GET /api/v1/notificaciones/{id}
 
-Repository Pattern
-*DTO Pattern
-*Dependency Injection
-*REST Client Pattern
-
-Estrategia Arquitectónica
-
-*Domain Driven Design (DDD)
 ---
 
-# Configuración Oracle
+### Sucursales
 
-spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
-spring.datasource.username=SYSTEM
-spring.datasource.password=TU_PASSWORD
+GET /api/v1/sucursales
+
+POST /api/v1/sucursales
+
+GET /api/v1/sucursales/{id}
+
 ---
 
-# Ejecución del Proyecto
+## Integración con VetNova
 
-Ejecutar Microservicios
+Estos microservicios forman parte de la solución distribuida VetNova junto a los módulos:
 
-ms-inventario
+* Clientes
+* Mascotas
+* Usuarios y Roles
+* Agenda
+* Atención Clínica
+* Ventas y Pagos
+* Autenticación y Seguridad
 
-Puerto: 8087
-
-ms-notificaciones
-
-Puerto: 8089
-
-ms-sucursales-administracion
-
-Puerto: 8090
----
-# Pruebas Realizadas
-
-Las pruebas fueron ejecutadas utilizando:
-
-*Postman
-*Oracle Database
-*Endpoints REST
-*Comunicación entre microservicios
-*Validaciones de negocio
----
-
-# Endpoints Principales
-
-Inventario
-http
-/api/v1/productos
-/api/v1/proveedores
-/api/v1/movimientos
-
-Sucursales
-http
-/api/v1/sucursales
-/api/v1/boxes
-/api/v1/horarios
-
-Notificaciones
-http
-/api/v1/notificaciones
----
-
-# Manejo Global de Errores
-
-El proyecto implementa:
-@RestControllerAdvice
-
-para de esta manera centralizar:
-*validaciones
-*errores de negocio
-*respuestas estructuradas JSON
----
-# Logs y Trazabilidad
-
-El sistema implementa logs estructurados utilizando SLF4J Logger para registrar:
-
--movimientos de inventario,
--actualización de stock,
--detección de stock bajo,
--creación automática de notificaciones,
--monitoreo de eventos críticos.
-
-Ejemplo:
-
-INFO Registrando movimiento de inventario
-WARN Stock bajo detectado
-INFO Notificación registrada correctamente
----
-
-
+La arquitectura permite la integración mediante APIs REST y DTOs compartidos entre dominios del negocio.
