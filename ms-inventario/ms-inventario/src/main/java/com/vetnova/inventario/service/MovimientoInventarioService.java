@@ -1,15 +1,16 @@
 package com.vetnova.inventario.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.vetnova.inventario.dto.NotificacionRequest;
 import com.vetnova.inventario.model.MovimientoInventario;
 import com.vetnova.inventario.model.Producto;
 import com.vetnova.inventario.repository.MovimientoInventarioRepository;
 import com.vetnova.inventario.repository.ProductoRepository;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -24,6 +25,12 @@ public class MovimientoInventarioService {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${notificaciones.url}")
+    private String notificacionesUrl;
 
     public List<MovimientoInventario> listarMovimientos() {
         return movimientoRepository.findAll();
@@ -74,32 +81,36 @@ public class MovimientoInventarioService {
                 producto.getStockActual());
 
         if (producto.getStockActual() <= producto.getStockMinimo()) {
-
-            logger.warn("Evento StockBajo generado. Producto: {}, Stock actual: {}, Stock mínimo: {}, Sucursal ID: {}",
-                    producto.getNombre(),
-                    producto.getStockActual(),
-                    producto.getStockMinimo(),
-                    movimiento.getIdSucursal());
-
-            /*
-             * Aquí NO llamamos directamente a ms-notificaciones.
-             * En arquitectura desacoplada, ms-inventario debe publicar un evento StockBajo
-             * y ms-notificaciones debe consumirlo.
-             *
-             * Evento futuro:
-             * {
-             *   "eventType": "StockBajo",
-             *   "source": "ms-inventario",
-             *   "productoId": producto.getIdProducto(),
-             *   "nombreProducto": producto.getNombre(),
-             *   "stockActual": producto.getStockActual(),
-             *   "stockMinimo": producto.getStockMinimo(),
-             *   "sucursalId": movimiento.getIdSucursal()
-             * }
-             */
+            enviarNotificacionStockBajo(producto, movimiento.getIdSucursal());
         }
 
         return movimientoRepository.save(movimiento);
+    }
+
+    private void enviarNotificacionStockBajo(Producto producto, Long idSucursal) {
+        try {
+            NotificacionRequest request = new NotificacionRequest(
+                    "administracion",
+                    "Stock bajo del producto " + producto.getNombre()
+                            + ". Stock actual: " + producto.getStockActual()
+                            + ". Stock mínimo: " + producto.getStockMinimo()
+                            + ". Sucursal ID: " + idSucursal,
+                    "STOCK_BAJO",
+                    "SISTEMA",
+                    "ALTA"
+            );
+
+            restTemplate.postForEntity(
+                    notificacionesUrl,
+                    request,
+                    String.class
+            );
+
+            logger.warn("Notificación STOCK_BAJO enviada para producto: {}", producto.getNombre());
+
+        } catch (Exception e) {
+            logger.warn("No se pudo enviar notificación de stock bajo: {}", e.getMessage());
+        }
     }
 
     public List<MovimientoInventario> buscarPorProducto(Long idProducto) {
